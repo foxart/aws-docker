@@ -1,0 +1,46 @@
+#app: your-app-name
+#org: your-org-name
+service: docker
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  region: eu-west-1
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
+
+  ecr: # In this section you can define images that will be built locally and uploaded to ECR
+    images:
+      docker_image:
+        path: ./
+#      baseimage:
+#        uri: 640788949144.dkr.ecr.eu-west-1.amazonaws.com/dealer-lambda-pdf
+
+functions:
+  test1:
+    description: Test default function
+    image:
+      name: docker_image
+#      command:
+#        - handler.test1
+#      entryPoint:
+#        - '/lambda-entrypoint.sh'
+    events:
+      - http:
+          path: v1/test1
+          method: get
+          cors: true
+  test2:
+    description: Test custom function
+    image:
+      name: docker_image
+      command:
+        - handler.test2
+      entryPoint:
+        - '/lambda-entrypoint.sh'
+    events:
+      - http:
+          path: v1/test2
+          method: post
+          cors: true
